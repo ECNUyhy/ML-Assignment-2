@@ -73,7 +73,7 @@
 
 **手写数字"3"的像素灰度图**
 
-![alt text](sample/image.png)
+<img src="sample/image.png" alt="手写数字3" width="100"/>
 </div>
 
 #### 对应的数值矩阵
@@ -159,7 +159,7 @@ array([0.78 0.   0.64 0.   0.   0.42 0.   0.57 0.29 0.   0.   0.   0.   0.74
 
 > ⚡ 评测使用 **10个并发线程** 对测试集进行预测
 
-> **位次排序逻辑**：Accuracy高 -> 推理时间短 -> 最近提交时间近
+> **位次排序逻辑**：Accuracy高 -> 推理时间短 -> 最近提交时间远
 
 
 ### 评分方式
@@ -262,27 +262,22 @@ class Solution:
     def __init__(self):
         """初始化推理类，加载并训练模型"""
         self.model = Model()
-        # 可在此加载训练好的模型参数或调用 self.model.fit() 进行训练
-        # 例如: self.model.fit(X_train, y_train)
+        # 可加载训练数据并训练模型
+        # self.model.fit(X_train, y_train)
 
-
-    def forward(self, sample: Dict[str, Any]) -> Dict[str, int]:
-        """模型推理接口，接收单条样本数据并返回预测结果
-        
-        Args:
-            sample: 单条样本数据，包含该样本的特征
-                      
-        Returns:
-            包含预测结果的字典，格式为: {'prediction': int(预测类别编号)}
+    def forward(self, sample: np.ndarray) -> dict:
         """
-        # 1. 将样本转换为numpy数组（或其他模型可接受的格式）
-        x = np.array(list(sample.values()), dtype=float).reshape(1, -1)
+        模型推理接口，接收单条样本数据并返回预测结果
 
-        # 2. 使用模型进行预测
+        Args:
+            sample: numpy数组, shape (H,W)
+        
+        Returns:
+            dict: {'prediction': int}，预测类别
+        """
+        x = sample.reshape(1, -1)  
         y_pred = self.model.predict(x)
-
-        # 3. 返回预测输出
-        return {'prediction': int(y_pred[0])}
+        return {"prediction": int(y_pred[0])}
 ```
 
 ---
